@@ -1,0 +1,10 @@
+{ Sample Program
+  in MiniP language -
+  repeat statement
+}
+
+count:=1;
+repeat
+	write count;
+	count:=count+1
+until count=10

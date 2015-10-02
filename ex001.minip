@@ -1,0 +1,6 @@
+{ Sample program
+  in MiniP language
+  write statement
+}
+
+write 1
