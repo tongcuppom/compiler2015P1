@@ -1,4 +1,7 @@
 
 public abstract class AST {
-	public String word;
+	public boolean isTag;
+	public int numChildren;
+	public String tagName;
+	public abstract AST getChild(int i);
 }
