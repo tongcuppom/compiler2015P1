@@ -7,8 +7,10 @@ public class Main {
 		for(int i=1; i<args.length; i++){
 			try{
 				if(i%2==1){
-					miniPParser.parse(args[i]);
+					Program p = miniPParser.parse(args[i]);
 					fileNum++;
+					Traverse t = new Traverse();
+					t.printTree(p, "");
 				}
 			}
 			catch (Exception e){

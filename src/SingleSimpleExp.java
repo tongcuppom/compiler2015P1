@@ -4,5 +4,12 @@ public class SingleSimpleExp extends SimpleExp{
 	
 	public SingleSimpleExp(Term t){
 		this.t = t;
+		isTag = false;
+		numChildren = 1;
+		tagName = "";
+	}
+
+	public AST getChild(int i) {
+		return t;
 	}
 }

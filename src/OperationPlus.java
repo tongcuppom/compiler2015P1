@@ -6,5 +6,15 @@ public class OperationPlus extends SimpleExp {
 	public OperationPlus(SimpleExp s, Term t){
 		this.s = s;
 		this.t = t;
+		isTag = true;
+		numChildren = 2;
+		tagName = "Op: + \n";
+	}
+
+	public AST getChild(int i) {
+		if(i==0)
+			return s;
+		else
+			return t;
 	}
 }

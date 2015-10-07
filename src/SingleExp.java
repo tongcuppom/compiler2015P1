@@ -4,5 +4,12 @@ public class SingleExp extends Exp{
 	
 	public SingleExp(SimpleExp s){
 		this.s = s;
+		isTag = false;
+		numChildren = 1;
+		tagName = "";
+	}
+
+	public AST getChild(int i) {
+		return s;
 	}
 }

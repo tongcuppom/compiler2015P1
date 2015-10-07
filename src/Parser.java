@@ -21,7 +21,6 @@ public class Parser {
 		scanner = new CompilerScanner(filePath);
 		acceptIt();
 		p = parseProgram();
-		System.out.println("congrat");
 		return p;					
 	}
 	

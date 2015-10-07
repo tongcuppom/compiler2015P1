@@ -6,5 +6,15 @@ public class OperationMultiply extends Term{
 	public OperationMultiply(Term t, Factor f){
 		this.t = t;
 		this.f = f;
+		isTag = true;
+		numChildren = 2;
+		tagName = "Op: * \n";
+	}
+
+	public AST getChild(int i) {
+		if(i==0)
+			return t;
+		else
+			return f;
 	}
 }
