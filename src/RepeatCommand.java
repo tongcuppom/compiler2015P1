@@ -17,4 +17,9 @@ public class RepeatCommand extends Stmt{
 		else
 			return e;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitRepeatCommand(this, org);
+	}
 }

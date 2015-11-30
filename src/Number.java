@@ -15,4 +15,9 @@ public class Number extends Terminal{
 	public AST getChild(int i) {
 		return null;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitNumber(this, org);
+	}
 }

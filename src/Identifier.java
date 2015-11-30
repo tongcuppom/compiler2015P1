@@ -15,4 +15,9 @@ public class Identifier extends Terminal{
 	public String getSpelling() {
 		return spelling;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitIdentifier(this, org);
+	}
 }

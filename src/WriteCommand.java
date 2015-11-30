@@ -12,4 +12,9 @@ public class WriteCommand extends Stmt{
 	public AST getChild(int i) {
 		return e;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitWriteCommand(this, org);
+	}
 }

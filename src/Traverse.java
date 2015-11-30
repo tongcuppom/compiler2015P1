@@ -1,14 +1,23 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
 
 public class Traverse {
 	
  String prefix;
+ Writer writer;
 	
-	public Traverse(){
+	public Traverse(Writer writer) throws FileNotFoundException{
+		this.writer = writer;
 		prefix = "";
 	}
 	
-	public void printTree(AST a, String pre){
-		System.out.print(a.isTag ? pre+a.tagName:"");
+	public void printTree(AST a, String pre) throws IOException{
+		writer.write(a.isTag ? pre+a.tagName:"");
 		if(a.numChildren>0){
 			for(int i=0; i<a.numChildren; i++){
 				AST temp = a.getChild(i);				
@@ -16,6 +25,6 @@ public class Traverse {
 			}
 		}
 		else
-			System.out.println(a.spelling);
+			writer.write(a.spelling+"\n");
 	}
 }

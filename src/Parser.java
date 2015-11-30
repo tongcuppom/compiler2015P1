@@ -102,15 +102,17 @@ public class Parser {
 	}
 	
 	private Stmt parseAssignStmt() throws Exception{
-		VName v = parseVName();
+		IdCommand i = parseVName();
 		acceptIt();	
 		accept(Token.ASSIGN);
 		Exp e = parseExp();
-		return new AssignCommand(v,e);
+		return new AssignCommand(i,e);
 	}
 	
 	private Stmt parseReadStmt() throws Exception{
-		return new ReadCommand(parseVName());
+		IdCommand i = parseVName();
+		acceptIt();
+		return new ReadCommand(i);
 	}
 	
 	private Stmt parseWriteStmt() throws Exception{
@@ -183,9 +185,9 @@ public class Parser {
 				f = new FactorExp(e);
 			break;
 			case Token.IDENTIFIER:
-				VName v =parseVName();  //get it before acceptIt change spelling	
+				IdCommand i = parseVName();  //get it before acceptIt change spelling	
 				acceptIt();
-				f = new FactorVName(v);
+				f = new FactorVName(i);
 			break;
 			case Token.NUMBER:
 				f = new ConstCommand(new Number(currentToken.spelling));  //get it before acceptIt change spelling
@@ -197,7 +199,7 @@ public class Parser {
 		return f;
 	}
 
-	private VName parseVName() throws Exception{
+	private IdCommand parseVName() throws Exception{
 		Identifier i = new Identifier(currentToken.spelling);
 		return new IdCommand(i);
 	}

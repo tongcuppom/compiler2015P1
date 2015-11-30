@@ -12,5 +12,10 @@ public class Program extends AST {
 	public AST getChild(int i) {
 		return s;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) {
+		return v.visitProgram(this, org);
+	}
 	
 }

@@ -17,4 +17,9 @@ public class OperationPlus extends SimpleExp {
 		else
 			return t;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitOperationPlus(this, org);
+	}
 }

@@ -118,11 +118,11 @@ public class CompilerScanner {
 			takeIt();
 			kind = Token.OPMINUS;
 		}
-		else if(currentChar == 40){ // *
+		else if(currentChar == 42){ // *
 			takeIt();
 			kind = Token.OPMUL;
 		}
-		else if(currentChar == 40){ // /
+		else if(currentChar == 47){ // /
 			takeIt();
 			kind = Token.OPDIV;
 		}

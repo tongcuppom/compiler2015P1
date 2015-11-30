@@ -17,4 +17,9 @@ public class OperationLessThan extends Exp{
 		else
 			return s2;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitOperationLessThan(this, org);
+	}
 }

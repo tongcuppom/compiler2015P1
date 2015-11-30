@@ -17,4 +17,9 @@ public class OperationMultiply extends Term{
 		else
 			return f;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitOperationMultiply(this, org);
+	}
 }

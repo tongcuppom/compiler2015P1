@@ -17,4 +17,9 @@ public class OperationEqual extends Exp{
 		else
 			return s2;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitOperationEqual(this, org);
+	}
 }

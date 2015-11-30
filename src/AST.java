@@ -5,4 +5,5 @@ public abstract class AST {
 	public String tagName;
 	public String spelling;
 	public abstract AST getChild(int i);
+	public abstract Object visit(Visitor v, Object org) throws Exception;
 }

@@ -12,4 +12,9 @@ public class ConstCommand extends Factor{
 	public AST getChild(int i) {
 		return n;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitConstCommand(this, org);
+	}
 }

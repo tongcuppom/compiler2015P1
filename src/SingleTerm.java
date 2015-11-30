@@ -12,4 +12,9 @@ public class SingleTerm extends Term{
 	public AST getChild(int i) {
 		return f;
 	}
+
+	@Override
+	public Object visit(Visitor v, Object org) throws Exception {
+		return v.visitSingleTerm(this, org);
+	}
 }
