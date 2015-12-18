@@ -1,23 +1,15 @@
 
 public final class CodeGenerator implements Visitor{
 	
-	private Instruction[] code;
-	private short nextInstrAddr;
-	private IdentificationTable idTable;
-	
-	public CodeGenerator(){
-		code = new Instruction[1024];
-		nextInstrAddr = 0;
-		idTable = new IdentificationTable();
-	}
+	private Instruction[] code = new Instruction[1024];
+	private short nextInstrAddr = 0;
 	
 	private void emit(byte op, byte n, byte r, short d){
 		code[nextInstrAddr++] = new Instruction(op,n,r,d);
 	}
 	
-	public void encode(Program prog) throws Exception{
+	public void encode(Program prog){
 		prog.visit(this, null);
-		printCode();
 	}
 	
 	public short valuation(String s){
@@ -27,139 +19,43 @@ public final class CodeGenerator implements Visitor{
 	private void patch(short addr, short d){
 		code[addr].d = d;
 	}
-	
-	private void printCode(){
-		for(int i=0; i<nextInstrAddr; i++){
-			Instruction temp = code[i];
-			String strOut = "";
-			switch(temp.op){
-				case 0:
-					strOut+= "LD ";
-					break;
-				case 1:
-					strOut+= "LDA ";
-					break;
-				case 2:
-					strOut+= "LDC ";
-					break;
-				case 3:
-					strOut+= "ST ";
-					break;
-				case 4:
-					strOut+= "JLT ";
-					break;
-				case 5:
-					strOut+= "JLE ";
-					break;
-				case 6:
-					strOut+= "JGT ";
-					break;
-				case 7:
-					strOut+= "JGE ";
-					break;
-				case 8:
-					strOut+= "JEQ ";
-					break;
-				case 9:
-					strOut+= "JNE ";
-					break;
-				case 10:
-					strOut+= "HALT ";
-					break;
-				case 11:
-					strOut+= "IN ";
-					break;
-				case 12:
-					strOut+= "OUT ";
-					break;
-				case 13:
-					strOut+= "ADD ";
-					break;
-				case 14:
-					strOut+= "SUB ";
-					break;
-				case 15:
-					strOut+= "MUL ";
-					break;
-				case 16:
-					strOut+= "DIV ";
-					break;
-			}
-			
-			System.out.println(strOut);
-		}
-	}
-	
-	private void encodeAssign(IdCommand i){
-		String spelling = i.i.getSpelling();
-		Attribute temp = idTable.retrieve(spelling); 
-		
-		if(temp != null){
-			int dMem = temp.dMemPlace;
-			emit(Instruction.STop,Instruction.MPr,Instruction.ACr,(short) dMem);  // ST ACr, dMem(MPr)
-		}
-		else{
-			idTable.enter(spelling, new Attribute(Attribute.VAR, Attribute.INT, idTable.lastInDMem));
-			int dMem = idTable.retrieve(spelling).dMemPlace;
-			emit(Instruction.STop,Instruction.MPr,Instruction.ACr,(short) dMem);  // ST ACr, dMem(MPr)
-		}
-	}
 
 	@Override
 	public Object visitProgram(Program prog, Object arg) throws Exception {
 		
-		emit(Instruction.LDop,new Byte("0"),Instruction.MPr,new Short("0")); // LD MPr, 0(0)
-		emit(Instruction.STop,new Byte("0"),Instruction.ACr,new Short("0")); // ST ACr, 0(0)
+		emit(Instruction.LDop,new Byte("6"),new Byte("0"),new Short("0"));
+		emit(Instruction.STop,new Byte("0"),new Byte("0"),new Short("0"));
 		
 		prog.s.visit(this, arg);
 		
-		emit(Instruction.HALTop,new Byte("0"),new Byte("0"),new Short("0")); // HALT 0,0,0
-		
+		emit(Instruction.HALTop,new Byte("0"),new Byte("0"),new Short("0"));
 		return null;
 	}
 
 	@Override
 	public Object visitAssignCommand(AssignCommand com, Object arg)
 			throws Exception {
-		com.e.visit(this, arg);
-		encodeAssign(com.i);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object visitConstCommand(ConstCommand com, Object arg)
 			throws Exception {
-		com.n.visit(this, arg);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object visitIfCommand(IfCommand com, Object arg) throws Exception {
-		com.e.visit(this, arg);
-		
-		short h = nextInstrAddr;
-		emit(Instruction.JEQop,Instruction.PCr,Instruction.PCr,new Short("0")); // JEQ PCr, dummy(PCr)
-		
-		com.s1.visit(this, arg);
-		
-		short g = nextInstrAddr;
-		
-		if(com.numChildren==3){	
-			short h2 = nextInstrAddr;
-			emit(Instruction.LDAop,Instruction.PCr,Instruction.PCr,new Short("0")); // LDA PCr, dummy(PCr) 
-			com.s2.visit(this, arg);			
-			short g2 = nextInstrAddr;
-			patch(h2,(short) (g2-h2)); // LDA PCr, (g2-h2)(PCr)
-		}
-		patch(h,(short) (g-h)); // JEQ PCr, (g-h)(PCr)
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object visitReadCommand(ReadCommand com, Object arg)
 			throws Exception {
-		emit(Instruction.INop,new Byte("0"),Instruction.ACr,new Short("0"));  // IN ACr, 0, 0
-		encodeAssign(com.i);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -173,8 +69,7 @@ public final class CodeGenerator implements Visitor{
 	@Override
 	public Object visitWriteCommand(WriteCommand com, Object arg)
 			throws Exception {
-		com.e.visit(this, arg);
-		emit(Instruction.OUTop,new Byte("0"),Instruction.ACr,new Short("0")); // OUT ACr,0,0
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -186,7 +81,7 @@ public final class CodeGenerator implements Visitor{
 
 	@Override
 	public Object visitFactorExp(FactorExp exp, Object arg) throws Exception {
-		exp.e.visit(this, arg);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -199,27 +94,26 @@ public final class CodeGenerator implements Visitor{
 
 	@Override
 	public Object visitSingleExp(SingleExp exp, Object arg) throws Exception {
-		exp.s.visit(this, arg);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object visitSingleSimpleExp(SingleSimpleExp exp, Object arg)
 			throws Exception {
-		exp.t.visit(this, arg);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object visitSingleTerm(SingleTerm exp, Object arg) throws Exception {
-		exp.f.visit(this, arg);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object visitStmtSeq(StmtSeq exp, Object arg) throws Exception {
-		exp.s1.visit(this, null);
-		exp.s2.visit(this, null);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -273,8 +167,7 @@ public final class CodeGenerator implements Visitor{
 
 	@Override
 	public Object visitNumber(Number i, Object org) throws Exception {
-		short val = valuation(i.spelling);
-		emit(Instruction.LDCop,new Byte("0"),Instruction.ACr,val);
+		// TODO Auto-generated method stub
 		return null;
 	}
 

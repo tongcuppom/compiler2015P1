@@ -25,12 +25,6 @@ public class Main {
 					
 					Program p = miniPParser.parse(path+ pathFile + fileName + ".minip");  // input name = ex001.minip
 					
-					Checker checker = new Checker();
-					checker.checkProgram(p);
-					
-					CodeGenerator cg = new CodeGenerator();
-					cg.encode(p);
-					
 					OutputStream outputStream = new FileOutputStream(new File(path+pathFile+fileName+".tree"));  // output name = ex001.tree
 					Writer writer = new OutputStreamWriter(outputStream);
 					

@@ -14,7 +14,7 @@ public class Program extends AST {
 	}
 
 	@Override
-	public Object visit(Visitor v, Object org) throws Exception {
+	public Object visit(Visitor v, Object org) {
 		return v.visitProgram(this, org);
 	}
 	

@@ -3,7 +3,7 @@ public class Checker implements Visitor{
 
 	private IdentificationTable idTable;
 	
-	public void checkProgram(Program prog) throws Exception{
+	public void checkProgram(Program prog){
 		idTable = new IdentificationTable();
 		
 		prog.visit(this, null);
