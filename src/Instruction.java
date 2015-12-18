@@ -1,9 +1,9 @@
 
 public class Instruction {
 	public byte op;
-	public byte r;
-	public byte n;
-	public short d;
+	public byte r; //register
+	public byte n; //length or 's'
+	public short d;	//field
 	
 	public static final byte LDop = 0,
 			LDAop = 1,

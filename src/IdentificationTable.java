@@ -10,6 +10,7 @@ public class IdentificationTable {
 	private LinkedList<Map<String,Attribute>> idenTable;
 	
 	public IdentificationTable(){
+		idenTable = new LinkedList<Map<String,Attribute>>();
 		level = 0;
 		lastInDMem = 0;
 		idenTable.add(new HashMap<String,Attribute>());
