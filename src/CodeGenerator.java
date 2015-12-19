@@ -138,7 +138,7 @@ public final class CodeGenerator implements Visitor{
 		com.e.visit(this, arg);
 		
 		short h = nextInstrAddr;
-		emit(Instruction.JEQop,Instruction.PCr,Instruction.PCr,new Short("0")); // JEQ PCr, dummy(PCr)
+		emit(Instruction.JEQop,Instruction.PCr,Instruction.ACr,new Short("0")); // JEQ ACr, dummy(PCr)
 		
 		com.s1.visit(this, arg);
 		
@@ -151,7 +151,7 @@ public final class CodeGenerator implements Visitor{
 			short g2 = nextInstrAddr;
 			patch(h2,(short) (g2-h2)); // LDA PCr, (g2-h2)(PCr)
 		}
-		patch(h,(short) (g-h)); // JEQ PCr, (g-h)(PCr)
+		patch(h,(short) (g-h)); // JEQ ACr, (g-h)(PCr)
 		return null;
 	}
 
@@ -166,7 +166,11 @@ public final class CodeGenerator implements Visitor{
 	@Override
 	public Object visitRepeatCommand(RepeatCommand com, Object arg)
 			throws Exception {
-		// TODO Auto-generated method stub
+		short h = nextInstrAddr;
+		com.s.visit(this, arg);
+		com.e.visit(this, arg);
+		short g = nextInstrAddr;
+		emit(Instruction.JEQop,Instruction.PCr,Instruction.ACr,(short)(g-h));	// JEQ ACr, (g-h)(PCr)
 		return null;
 	}
 
@@ -180,7 +184,21 @@ public final class CodeGenerator implements Visitor{
 
 	@Override
 	public Object visitIdCommand(IdCommand com, Object arg) throws Exception {
-		// TODO Auto-generated method stub
+		if(arg != null){
+			if((int)arg == 1){ // first argument
+				byte place = (byte)idTable.retrieve(com.i.spelling).dMemPlace;
+				emit(Instruction.LDop,Instruction.GPr,Instruction.ACr,place);			// LD ACr, place(GPr)
+				emit(Instruction.STop,Instruction.MPr,Instruction.ACr,new Short("0"));	// ST ACr, 0(MPr)
+			}
+			else{
+				byte place = (byte)idTable.retrieve(com.i.spelling).dMemPlace;
+				emit(Instruction.LDop,Instruction.GPr,Instruction.ACr,place);		// LD ACr, place(GPr)
+			}
+		}
+		else{
+			byte place = (byte)idTable.retrieve(com.i.spelling).dMemPlace;
+			emit(Instruction.LDop,Instruction.GPr,Instruction.ACr,place);		// LD ACr, place(GPr)
+		}
 		return null;
 	}
 
@@ -193,7 +211,7 @@ public final class CodeGenerator implements Visitor{
 	@Override
 	public Object visitFactorVName(FactorVName exp, Object arg)
 			throws Exception {
-		// TODO Auto-generated method stub
+		exp.i.visit(this, arg);
 		return null;
 	}
 
@@ -226,14 +244,24 @@ public final class CodeGenerator implements Visitor{
 	@Override
 	public Object visitOperationDivide(OperationDivide op, Object arg)
 			throws Exception {
-		// TODO Auto-generated method stub
+		op.t.visit(this, 1);
+		op.f.visit(this, 2);
+		emit(Instruction.LDop,Instruction.MPr,Instruction.AC1r,new Short("0"));  	// LD 1,0(MPr)
+		emit(Instruction.DIVop,new Byte("0"),new Byte("0"),new Short("0"));			// DIV 0,1,0
 		return null;
 	}
 
 	@Override
 	public Object visitOperationEqual(OperationEqual op, Object arg)
 			throws Exception {
-		// TODO Auto-generated method stub
+		op.s1.visit(this, 1);
+		op.s2.visit(this, 2);
+		emit(Instruction.LDop,Instruction.MPr,Instruction.AC1r,new Short("0"));  	// LD 1,0(MPr)
+		emit(Instruction.SUBop,new Byte("0"),new Byte("0"),new Short("0"));			// SUB 0,1,0
+		emit(Instruction.JEQop,Instruction.PCr,Instruction.ACr,new Short("2"));		// JEQ ACr, 2(PCr)
+		emit(Instruction.LDCop,new Byte("0"),Instruction.ACr,new Short("0"));  		// LDC ACr,0(0)
+		emit(Instruction.LDAop,Instruction.PCr,Instruction.PCr,new Short("1"));  	// LDA PCr,1(PCr)
+		emit(Instruction.LDCop,new Byte("0"),Instruction.ACr,new Short("1"));  		// LDC ACr,1(0)
 		return null;
 	}
 
@@ -247,21 +275,30 @@ public final class CodeGenerator implements Visitor{
 	@Override
 	public Object visitOperationMinus(OperationMinus op, Object arg)
 			throws Exception {
-		// TODO Auto-generated method stub
+		op.s.visit(this, 1);
+		op.t.visit(this, 2);
+		emit(Instruction.LDop,Instruction.MPr,Instruction.AC1r,new Short("0"));  	// LD 1,0(MPr)
+		emit(Instruction.SUBop,new Byte("0"),new Byte("0"),new Short("0"));			// SUB 0,1,0
 		return null;
 	}
 
 	@Override
 	public Object visitOperationMultiply(OperationMultiply op, Object arg)
 			throws Exception {
-		// TODO Auto-generated method stub
+		op.t.visit(this, 1);
+		op.f.visit(this, 2);
+		emit(Instruction.LDop,Instruction.MPr,Instruction.AC1r,new Short("0"));  	// LD 1,0(MPr)
+		emit(Instruction.MULop,new Byte("0"),new Byte("0"),new Short("0"));			// MUL 0,1,0
 		return null;
 	}
 
 	@Override
 	public Object visitOperationPlus(OperationPlus op, Object arg)
 			throws Exception {
-		// TODO Auto-generated method stub
+		op.s.visit(this, 1);
+		op.t.visit(this, 2);
+		emit(Instruction.LDop,Instruction.MPr,Instruction.AC1r,new Short("0"));  	// LD 1,0(MPr)
+		emit(Instruction.ADDop,new Byte("0"),new Byte("0"),new Short("0"));			// ADD 0,1,0
 		return null;
 	}
 
@@ -274,7 +311,19 @@ public final class CodeGenerator implements Visitor{
 	@Override
 	public Object visitNumber(Number i, Object org) throws Exception {
 		short val = valuation(i.spelling);
-		emit(Instruction.LDCop,new Byte("0"),Instruction.ACr,val);
+		
+		if(org != null){
+			if((int)org == 1){ // first argument
+				emit(Instruction.LDCop,Instruction.GPr,Instruction.ACr,val);				// LD ACr, val(GPr)
+				emit(Instruction.STop,Instruction.MPr,Instruction.ACr,new Short("0"));	// ST ACr, 0(MPr)
+			}
+			else{
+				emit(Instruction.LDCop,Instruction.GPr,Instruction.ACr,val);		// LD ACr, val(GPr)
+			}
+		}
+		else{
+			emit(Instruction.LDCop,Instruction.GPr,Instruction.ACr,val);		// LD ACr, val(GPr)
+		}
 		return null;
 	}
 
